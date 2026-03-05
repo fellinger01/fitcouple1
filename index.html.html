@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d0d0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FitCouple">
+<title>FitCouple — Planet Fitness Program</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --card: #1e1e1e;
+  --card2: #252525;
+  --pf-purple: #7c3aed;
+  --pf-yellow: #fbbf24;
+  --pf-green: #22c55e;
+  --pf-red: #ef4444;
+  --pf-blue: #3b82f6;
+  --pf-pink: #d946ef;
+  --text: #f5f5f5;
+  --muted: #888;
+  --border: #2a2a2a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+/* ── TOP NAV ── */
+.top-nav {
+  position: sticky; top:0; z-index:200;
+  background: rgba(13,13,13,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; height: 56px;
+}
+.nav-logo { font-family:'Bebas Neue',cursive; font-size:20px; letter-spacing:2px; background:linear-gradient(135deg,#fff 30%,#fbbf24 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.nav-tabs { display:flex; gap:4px; }
+.nav-tab { background:transparent; border:none; color:var(--muted); padding:8px 12px; border-radius:8px; cursor:pointer; font-size:12px; font-family:'DM Sans',sans-serif; font-weight:500; transition:all 0.2s; white-space:nowrap; }
+.nav-tab:hover { color:var(--text); background:rgba(255,255,255,0.05); }
+.nav-tab.active { background:var(--pf-purple); color:#fff; }
+.nav-who { display:flex; gap:6px; }
+.who-btn { background:var(--card); border:1px solid var(--border); color:var(--muted); padding:6px 12px; border-radius:20px; cursor:pointer; font-size:12px; font-family:'DM Sans',sans-serif; font-weight:600; transition:all 0.2s; }
+.who-btn.him.active { background:#1e3a8a; border-color:#3b82f6; color:#93c5fd; }
+.who-btn.her.active { background:#701a75; border-color:#d946ef; color:#f0abfc; }
+
+/* ── PAGE SYSTEM ── */
+.page { display:none; }
+.page.active { display:block; }
+
+/* ── HERO ── */
+.hero {
+  background:linear-gradient(135deg,#1a0533 0%,#0d0d0d 50%,#0f1f0a 100%);
+  padding:50px 40px 36px; text-align:center; border-bottom:1px solid var(--border);
+  position:relative; overflow:hidden;
+}
+.hero::before { content:''; position:absolute; top:-50%; left:50%; transform:translateX(-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(124,58,237,0.15) 0%,transparent 70%); pointer-events:none; }
+.hero-badge { display:inline-block; background:var(--pf-purple); color:white; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:6px 16px; border-radius:20px; margin-bottom:18px; }
+.hero h1 { font-family:'Bebas Neue',cursive; font-size:clamp(44px,8vw,86px); letter-spacing:3px; line-height:1; background:linear-gradient(135deg,#fff 30%,#fbbf24 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:10px; }
+.hero p { color:var(--muted); font-size:15px; max-width:480px; margin:0 auto 24px; line-height:1.6; }
+.stats-bar { display:flex; justify-content:center; gap:36px; flex-wrap:wrap; margin-top:24px; }
+.stat { text-align:center; }
+.stat-val { font-family:'Bebas Neue',cursive; font-size:30px; color:var(--pf-yellow); display:block; }
+.stat-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+/* ── PROFILES ── */
+.profiles { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); border-bottom:1px solid var(--border); }
+.profile { background:var(--surface); padding:24px 28px; }
+.profile-header { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.avatar { width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.avatar.male { background:linear-gradient(135deg,#1e3a8a,#3b82f6); }
+.avatar.female { background:linear-gradient(135deg,#701a75,#d946ef); }
+.profile-name { font-family:'Bebas Neue',cursive; font-size:21px; letter-spacing:1px; }
+.profile-sub { font-size:12px; color:var(--muted); }
+.profile-stats { display:flex; gap:16px; flex-wrap:wrap; }
+.ps { background:var(--card); border-radius:8px; padding:7px 12px; font-size:13px; }
+.ps span { display:block; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:2px; }
+
+/* ── WARNING ── */
+.warning { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.3); border-radius:12px; padding:18px 24px; margin:28px 28px 0; display:flex; gap:12px; align-items:flex-start; }
+.warning-icon { font-size:18px; flex-shrink:0; margin-top:2px; }
+.warning p { font-size:13px; color:#d4a843; line-height:1.6; }
+.warning strong { color:var(--pf-yellow); }
+
+/* ── PHASE TABS ── */
+.phase-nav { display:flex; gap:8px; padding:24px 28px 0; flex-wrap:wrap; }
+.phase-btn { background:var(--card); border:1px solid var(--border); color:var(--muted); padding:9px 20px; border-radius:8px; cursor:pointer; font-size:13px; font-family:'DM Sans',sans-serif; font-weight:500; transition:all 0.2s; }
+.phase-btn:hover { border-color:var(--pf-purple); color:var(--text); }
+.phase-btn.active { background:var(--pf-purple); border-color:var(--pf-purple); color:white; }
+.schedule { padding:20px 28px 36px; }
+.phase-content { display:none; }
+.phase-content.active { display:block; }
+.phase-desc { background:var(--card); border-radius:12px; padding:16px 20px; margin-bottom:20px; display:flex; gap:14px; align-items:center; border-left:4px solid var(--pf-purple); }
+.phase-desc p { font-size:13px; color:#ccc; line-height:1.5; }
+.phase-badge { background:var(--pf-purple); color:white; font-family:'Bebas Neue',cursive; font-size:13px; letter-spacing:1px; padding:4px 12px; border-radius:6px; white-space:nowrap; }
+.week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:9px; }
+.day-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:transform 0.2s,border-color 0.2s; cursor:pointer; }
+.day-card:hover { transform:translateY(-2px); border-color:var(--pf-purple); }
+.day-card.rest { opacity:0.6; }
+.day-card.active-day { border-color:var(--pf-yellow); box-shadow:0 0 20px rgba(251,191,36,0.1); }
+.day-header { padding:9px 11px; font-family:'Bebas Neue',cursive; font-size:13px; letter-spacing:1px; border-bottom:1px solid var(--border); }
+.day-header.cardio { background:rgba(239,68,68,0.15); color:#fca5a5; }
+.day-header.strength { background:rgba(59,130,246,0.15); color:#93c5fd; }
+.day-header.circuit { background:rgba(124,58,237,0.15); color:#c4b5fd; }
+.day-header.rest-h { background:rgba(34,197,94,0.1); color:#86efac; }
+.day-body { padding:10px; }
+.exercise-item { font-size:11px; color:#bbb; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; align-items:flex-start; gap:5px; line-height:1.35; }
+.exercise-item:last-child { border-bottom:none; }
+.exercise-item::before { content:'▸'; color:var(--pf-purple); flex-shrink:0; margin-top:1px; }
+.rest-text { font-size:11px; color:var(--muted); text-align:center; padding:14px 0; font-style:italic; }
+
+/* ── TIPS ── */
+.section { padding:0 28px 36px; }
+.section h2 { font-family:'Bebas Neue',cursive; font-size:30px; letter-spacing:2px; margin-bottom:18px; }
+.tips-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; }
+.tip-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; }
+.tip-card h3 { font-size:13px; font-weight:600; margin-bottom:9px; display:flex; align-items:center; gap:7px; }
+.tip-card ul { list-style:none; font-size:12px; color:#aaa; line-height:2; }
+.tip-card ul li::before { content:'✓ '; color:var(--pf-green); }
+
+/* ── NUTRITION ── */
+.calorie-cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.cal-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:22px; }
+.cal-card h3 { font-size:15px; font-weight:600; margin-bottom:14px; display:flex; gap:8px; align-items:center; }
+.macro-bar { margin-bottom:11px; }
+.macro-label { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:3px; }
+.bar-track { background:var(--border); border-radius:4px; height:5px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:4px; transition:width 0.6s ease; }
+.bar-fill.protein { background:var(--pf-blue); }
+.bar-fill.carbs { background:var(--pf-yellow); }
+.bar-fill.fat { background:var(--pf-red); }
+.cal-total { font-family:'Bebas Neue',cursive; font-size:34px; color:var(--pf-yellow); margin-bottom:3px; }
+.cal-sub { font-size:11px; color:var(--muted); }
+
+/* ── MILESTONES ROADMAP ── */
+.milestones { display:flex; gap:0; position:relative; }
+.milestones::before { content:''; position:absolute; top:23px; left:24px; right:24px; height:2px; background:var(--border); z-index:0; }
+.milestone { flex:1; text-align:center; position:relative; z-index:1; }
+.m-dot { width:46px; height:46px; border-radius:50%; background:var(--card); border:2px solid var(--border); margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:17px; }
+.m-dot.done { background:var(--pf-green); border-color:var(--pf-green); }
+.m-dot.current { background:var(--pf-purple); border-color:var(--pf-purple); box-shadow:0 0 16px rgba(124,58,237,0.5); }
+.milestone h4 { font-size:11px; font-weight:600; margin-bottom:3px; }
+.milestone p { font-size:10px; color:var(--muted); }
+
+/* ── MEAL SECTION ── */
+.meal-intro { color:var(--muted); font-size:12px; margin-bottom:20px; letter-spacing:0.5px; }
+.prep-banner { display:flex; gap:14px; background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.3); border-radius:12px; padding:18px 22px; margin-bottom:24px; align-items:flex-start; }
+.prep-banner-icon { font-size:26px; flex-shrink:0; }
+.prep-banner strong { display:block; font-size:14px; margin-bottom:5px; color:#c4b5fd; }
+.prep-banner p { font-size:12px; color:#aaa; line-height:1.6; }
+.meal-nav { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:20px; }
+.meal-btn { background:var(--card); border:1px solid var(--border); color:var(--muted); padding:9px 18px; border-radius:8px; cursor:pointer; font-size:12px; font-family:'DM Sans',sans-serif; font-weight:500; transition:all 0.2s; }
+.meal-btn:hover { border-color:var(--pf-green); color:var(--text); }
+.meal-btn.active { background:#14532d; border-color:var(--pf-green); color:#86efac; }
+.meal-content-tab { display:none; }
+.meal-content-tab.active { display:block; }
+.meal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:14px; margin-bottom:14px; }
+.meal-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:transform 0.2s; }
+.meal-card:hover { transform:translateY(-2px); }
+.meal-header { display:flex; gap:12px; align-items:flex-start; padding:14px 16px; border-bottom:1px solid var(--border); }
+.meal-emoji { font-size:26px; flex-shrink:0; }
+.meal-name { font-size:14px; font-weight:600; margin-bottom:2px; }
+.meal-meta { font-size:11px; color:var(--muted); }
+.meal-body { padding:14px 16px; }
+.meal-macros { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+.macro { padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+.macro.p { background:rgba(59,130,246,0.15); color:#93c5fd; }
+.macro.c { background:rgba(251,191,36,0.15); color:#fde68a; }
+.macro.f { background:rgba(239,68,68,0.15); color:#fca5a5; }
+.macro.cal { background:rgba(255,255,255,0.08); color:#ccc; }
+.meal-desc { font-size:12px; color:#bbb; line-height:1.6; margin-bottom:10px; }
+.meal-tags { display:flex; flex-wrap:wrap; gap:5px; }
+.tag { background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:6px; padding:2px 9px; font-size:11px; color:var(--muted); }
+.meal-tip { background:rgba(34,197,94,0.07); border:1px solid rgba(34,197,94,0.2); border-radius:10px; padding:12px 16px; font-size:12px; color:#aaa; line-height:1.5; }
+.meal-tip strong { color:#86efac; }
+.shop-intro { font-size:12px; color:var(--muted); margin-bottom:18px; }
+.shop-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; }
+.shop-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; }
+.shop-header { font-size:13px; font-weight:600; margin-bottom:10px; color:var(--pf-green); }
+.shop-item { display:flex; align-items:flex-start; gap:9px; font-size:12px; color:#bbb; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.04); line-height:1.4; }
+.shop-item:last-child { border-bottom:none; }
+.shop-check { color:var(--muted); flex-shrink:0; font-size:13px; cursor:pointer; }
+.weekly-overview { margin-top:28px; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
+.weekly-overview h3 { font-family:'Bebas Neue',cursive; font-size:20px; letter-spacing:1px; margin-bottom:16px; }
+.week-meal-grid { display:grid; grid-template-columns:82px 1fr 1fr 1fr 1fr; gap:1px; background:var(--border); border-radius:8px; overflow:hidden; font-size:11px; }
+.wm-header { background:#111; padding:9px 11px; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
+.wm-day { background:rgba(124,58,237,0.12); padding:10px; font-weight:600; font-size:11px; color:#c4b5fd; display:flex; align-items:center; }
+.wm-cell { background:var(--surface); padding:10px; color:#ccc; line-height:1.4; display:flex; align-items:center; }
+.wm-cell:hover { background:#252525; }
+
+/* ════════════════════════════════════════
+   TRACKER STYLES
+════════════════════════════════════════ */
+
+/* Dashboard */
+.tracker-header { padding:28px 28px 0; }
+.tracker-header h2 { font-family:'Bebas Neue',cursive; font-size:30px; letter-spacing:2px; margin-bottom:4px; }
+.tracker-header p { font-size:13px; color:var(--muted); margin-bottom:20px; }
+.dashboard-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:0 28px 28px; }
+
+/* Stat cards */
+.big-stat { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; position:relative; overflow:hidden; }
+.big-stat::before { content:''; position:absolute; top:-20px; right:-20px; width:80px; height:80px; border-radius:50%; opacity:0.08; }
+.big-stat.him-card::before { background:var(--pf-blue); }
+.big-stat.her-card::before { background:var(--pf-pink); }
+.big-stat-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.big-stat-val { font-family:'Bebas Neue',cursive; font-size:42px; line-height:1; margin-bottom:4px; }
+.big-stat-sub { font-size:12px; color:var(--muted); }
+.big-stat .user-tag { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.06); border-radius:20px; padding:3px 10px; font-size:11px; font-weight:600; margin-bottom:12px; }
+
+.stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:0 28px; margin-bottom:20px; }
+.mini-stat { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center; }
+.mini-stat-val { font-family:'Bebas Neue',cursive; font-size:26px; }
+.mini-stat-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-top:2px; }
+
+/* Charts */
+.chart-section { padding:0 28px 24px; }
+.chart-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:14px; }
+.chart-title { font-family:'Bebas Neue',cursive; font-size:18px; letter-spacing:1px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+.chart-legend { display:flex; gap:14px; font-size:11px; }
+.legend-dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:4px; }
+canvas.line-chart { width:100%; height:160px; display:block; }
+.div-chart { width:100%; min-height:180px; }
+.dc-bars { display:flex; align-items:flex-end; gap:6px; height:140px; padding:0 4px; }
+.dc-bar-group { display:flex; align-items:flex-end; gap:3px; flex:1; }
+.dc-bar { flex:1; border-radius:4px 4px 0 0; transition:height 0.5s; min-height:2px; }
+.dc-labels { display:flex; gap:6px; padding:6px 4px 0; }
+.dc-label { flex:1; text-align:center; font-size:10px; color:#666; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dc-yaxis { display:flex; flex-direction:column; justify-content:space-between; padding:0 6px 0 0; font-size:10px; color:#666; height:140px; text-align:right; }
+.dc-chart-inner { display:flex; }
+.dc-line-wrap { position:relative; height:160px; width:100%; overflow:hidden; }
+.dc-point { position:absolute; width:8px; height:8px; border-radius:50%; transform:translate(-50%,-50%); border:2px solid #0d0d0d; }
+.dc-line-svg { position:absolute; top:0; left:0; width:100%; height:100%; }
+
+/* Log buttons */
+.log-actions { display:flex; gap:10px; padding:0 28px 20px; flex-wrap:wrap; }
+.log-btn { display:flex; align-items:center; gap:8px; padding:12px 20px; border-radius:10px; border:none; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; transition:all 0.2s; }
+.log-btn:hover { opacity:0.85; transform:translateY(-1px); }
+.log-btn.green { background:#14532d; color:#86efac; border:1px solid #22c55e44; }
+.log-btn.blue { background:#1e3a8a; color:#93c5fd; border:1px solid #3b82f644; }
+.log-btn.purple { background:#3b0764; color:#c4b5fd; border:1px solid #7c3aed44; }
+
+/* Recent activity */
+.activity-section { padding:0 28px 28px; }
+.activity-title { font-family:'Bebas Neue',cursive; font-size:20px; letter-spacing:1px; margin-bottom:14px; }
+.activity-list { display:flex; flex-direction:column; gap:8px; }
+.activity-item { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:12px; }
+.activity-icon { font-size:20px; flex-shrink:0; }
+.activity-text { flex:1; }
+.activity-main { font-size:13px; font-weight:500; }
+.activity-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+.activity-date { font-size:11px; color:var(--muted); }
+.activity-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+.activity-badge.him { background:rgba(59,130,246,0.2); color:#93c5fd; }
+.activity-badge.her { background:rgba(217,70,239,0.2); color:#f0abfc; }
+.empty-state { text-align:center; color:var(--muted); padding:32px 20px; font-size:13px; }
+.empty-state .big-emoji { font-size:36px; display:block; margin-bottom:10px; }
+
+/* ── WORKOUT LOG PAGE ── */
+.log-page { padding:24px 28px; }
+.log-page h2 { font-family:'Bebas Neue',cursive; font-size:28px; letter-spacing:2px; margin-bottom:4px; }
+.log-page .sub { font-size:12px; color:var(--muted); margin-bottom:20px; }
+
+/* Who toggle */
+.who-toggle { display:flex; gap:8px; margin-bottom:20px; }
+.who-toggle-btn { flex:1; padding:12px; border-radius:10px; border:2px solid var(--border); background:var(--card); color:var(--muted); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; text-align:center; }
+.who-toggle-btn.him.active { background:#1e3a8a22; border-color:#3b82f6; color:#93c5fd; }
+.who-toggle-btn.her.active { background:#701a7522; border-color:#d946ef; color:#f0abfc; }
+
+/* Workout form */
+.workout-form { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:20px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+.form-group { margin-bottom:14px; }
+.form-group:last-child { margin-bottom:0; }
+.form-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:6px; }
+.form-input, .form-select { width:100%; background:#111; border:1px solid var(--border); color:var(--text); padding:10px 14px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s; }
+.form-input:focus, .form-select:focus { border-color:var(--pf-purple); }
+.form-select option { background:#111; }
+.form-textarea { width:100%; background:#111; border:1px solid var(--border); color:var(--text); padding:10px 14px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:13px; outline:none; resize:none; height:80px; transition:border-color 0.2s; }
+.form-textarea:focus { border-color:var(--pf-purple); }
+
+/* Exercise checklist */
+.exercise-checklist { background:#111; border-radius:10px; padding:14px; margin-bottom:14px; }
+.exercise-check-item { display:flex; align-items:flex-start; gap:10px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; }
+.exercise-check-item:last-child { border-bottom:none; }
+.exercise-check-item input[type=checkbox] { width:16px; height:16px; accent-color:var(--pf-purple); flex-shrink:0; margin-top:2px; cursor:pointer; }
+.exercise-check-item label { font-size:12px; color:#bbb; cursor:pointer; line-height:1.4; }
+.exercise-check-item.done label { color:var(--pf-green); text-decoration:line-through; opacity:0.7; }
+
+.save-btn { width:100%; padding:13px; border-radius:10px; border:none; background:var(--pf-purple); color:white; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.save-btn:hover { opacity:0.88; transform:translateY(-1px); }
+.save-btn.green { background:var(--pf-green); color:#000; }
+.save-btn.blue { background:var(--pf-blue); }
+
+/* History list */
+.history-section { margin-top:8px; }
+.history-title { font-family:'Bebas Neue',cursive; font-size:20px; letter-spacing:1px; margin-bottom:12px; }
+.history-item { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.history-main { flex:1; }
+.history-title-row { display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
+.history-name { font-size:14px; font-weight:600; }
+.history-date { font-size:11px; color:var(--muted); }
+.history-detail { font-size:12px; color:#aaa; margin-top:3px; }
+.history-notes { font-size:11px; color:var(--muted); margin-top:4px; font-style:italic; }
+.del-btn { background:transparent; border:none; color:#ef444455; cursor:pointer; font-size:18px; padding:0 4px; flex-shrink:0; transition:color 0.2s; }
+.del-btn:hover { color:#ef4444; }
+.badge-pill { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+.badge-pill.phase1 { background:rgba(34,197,94,0.2); color:#86efac; }
+.badge-pill.phase2 { background:rgba(251,191,36,0.2); color:#fde68a; }
+.badge-pill.phase3 { background:rgba(239,68,68,0.2); color:#fca5a5; }
+.badge-pill.him { background:rgba(59,130,246,0.2); color:#93c5fd; }
+.badge-pill.her { background:rgba(217,70,239,0.2); color:#f0abfc; }
+
+/* ── WEIGHT PAGE ── */
+.weight-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; }
+.weight-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; }
+.weight-card h3 { font-size:14px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.current-weight { font-family:'Bebas Neue',cursive; font-size:48px; line-height:1; margin-bottom:4px; }
+.current-weight.him { color:var(--pf-blue); }
+.current-weight.her { color:var(--pf-pink); }
+.weight-change { font-size:13px; font-weight:600; }
+.weight-change.lost { color:var(--pf-green); }
+.weight-change.gained { color:var(--pf-red); }
+.goal-bar-wrap { margin-top:14px; }
+.goal-bar-label { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:5px; }
+.goal-bar-track { background:var(--border); border-radius:6px; height:8px; overflow:hidden; }
+.goal-bar-fill { height:100%; border-radius:6px; transition:width 0.6s; }
+.goal-bar-fill.him { background:linear-gradient(90deg,var(--pf-blue),#22c55e); }
+.goal-bar-fill.her { background:linear-gradient(90deg,var(--pf-pink),#22c55e); }
+
+.weight-history-table { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+.wh-header { display:grid; grid-template-columns:1fr 80px 80px 80px; gap:1px; background:var(--border); }
+.wh-th { background:#111; padding:10px 14px; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+.wh-row { display:grid; grid-template-columns:1fr 80px 80px 80px; gap:1px; background:var(--border); }
+.wh-row:last-child { }
+.wh-td { background:var(--surface); padding:11px 14px; font-size:12px; color:#ccc; display:flex; align-items:center; }
+.wh-td.date { color:var(--muted); font-size:11px; }
+.wh-td.weight { font-weight:600; font-size:14px; }
+.wh-td.change { }
+
+/* ── MODAL / TOAST ── */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#1e1e1e; border:1px solid var(--pf-green); color:#86efac; padding:12px 24px; border-radius:10px; font-size:13px; font-weight:600; z-index:999; transition:transform 0.3s; pointer-events:none; }
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* ── BADGES PAGE ── */
+.badges-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; padding:0 28px 28px; }
+.badge-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px 14px; text-align:center; transition:all 0.3s; }
+.badge-card.unlocked { border-color:var(--pf-yellow); background:rgba(251,191,36,0.05); }
+.badge-card.locked { opacity:0.4; filter:grayscale(1); }
+.badge-icon { font-size:34px; margin-bottom:10px; display:block; }
+.badge-name { font-size:12px; font-weight:700; margin-bottom:4px; }
+.badge-desc { font-size:10px; color:var(--muted); line-height:1.4; }
+.badge-status { margin-top:8px; font-size:10px; font-weight:700; }
+.badge-status.unlocked { color:var(--pf-yellow); }
+.badge-status.locked { color:var(--muted); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:900px) {
+  .week-grid { grid-template-columns:repeat(4,1fr); }
+  .profiles { grid-template-columns:1fr; }
+  .calorie-cards { grid-template-columns:1fr; }
+  .milestones { flex-wrap:wrap; gap:18px; }
+  .milestones::before { display:none; }
+  .milestone { flex:0 0 calc(50% - 9px); }
+  .week-meal-grid { grid-template-columns:70px 1fr 1fr; }
+  .week-meal-grid .wm-header:nth-child(4), .week-meal-grid .wm-header:nth-child(5),
+  .week-meal-grid .wm-cell:nth-child(5n+4), .week-meal-grid .wm-cell:nth-child(5n+5) { display:none; }
+  .dashboard-grid { grid-template-columns:1fr; }
+  .weight-grid { grid-template-columns:1fr; }
+  .stat-row { grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:600px) {
+  .hero, .schedule, .section, .phase-nav { padding-left:16px; padding-right:16px; }
+  .week-grid { grid-template-columns:repeat(2,1fr); }
+  .stats-bar { gap:20px; }
+  .warning { margin:20px 16px 0; }
+  .nav-tabs { gap:2px; }
+  .nav-tab { padding:7px 9px; font-size:11px; }
+  .dashboard-grid, .log-page, .activity-section, .chart-section, .log-actions, .stat-row, .tracker-header, .badges-grid { padding-left:16px; padding-right:16px; }
+  .form-row { grid-template-columns:1fr; }
+  .wh-header, .wh-row { grid-template-columns:1fr 70px 70px; }
+  .wh-th:last-child, .wh-td:last-child { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="nav-logo">💪 FitCouple</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('plan')">📋 Plan</button>
+    <button class="nav-tab" onclick="showPage('dashboard')">📊 Dashboard</button>
+    <button class="nav-tab" onclick="showPage('workouts')">🏋️ Workouts</button>
+    <button class="nav-tab" onclick="showPage('weight')">⚖️ Weight</button>
+    <button class="nav-tab" onclick="showPage('badges')">🏆 Badges</button>
+  </div>
+  <div class="nav-who" style="display:none" id="whoToggleNav">
+    <button class="who-btn him active" onclick="setActiveUser('him')">👨 Him</button>
+    <button class="who-btn her" onclick="setActiveUser('her')">👩 Her</button>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     PAGE: PLAN (original content)
+══════════════════════════════════════ -->
+<div class="page active" id="page-plan">
+
+<div class="hero">
+  <div class="hero-badge">🏋️ Planet Fitness · Couples Program</div>
+  <h1>Your Journey<br>Starts Now</h1>
+  <p>A 12-week progressive program designed for two — lose weight, build stamina, and do it together.</p>
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-val">12</span><span class="stat-label">Weeks</span></div>
+    <div class="stat"><span class="stat-val">3</span><span class="stat-label">Phases</span></div>
+    <div class="stat"><span class="stat-val">4–5</span><span class="stat-label">Days/Week</span></div>
+    <div class="stat"><span class="stat-val">45–60</span><span class="stat-label">Min/Session</span></div>
+  </div>
+</div>
+
+<div class="profiles">
+  <div class="profile">
+    <div class="profile-header"><div class="avatar male">👨</div><div><div class="profile-name">Him</div><div class="profile-sub">Starting stats</div></div></div>
+    <div class="profile-stats">
+      <div class="ps"><span>Age</span>51 yrs</div><div class="ps"><span>Height</span>5'7"</div><div class="ps"><span>Weight</span>275 lbs</div><div class="ps"><span>BMI</span>~43</div><div class="ps"><span>Target Cal</span>~1,900/day</div>
+    </div>
+  </div>
+  <div class="profile">
+    <div class="profile-header"><div class="avatar female">👩</div><div><div class="profile-name">Her</div><div class="profile-sub">Starting stats</div></div></div>
+    <div class="profile-stats">
+      <div class="ps"><span>Age</span>45 yrs</div><div class="ps"><span>Height</span>5'3"</div><div class="ps"><span>Weight</span>190 lbs</div><div class="ps"><span>BMI</span>~34</div><div class="ps"><span>Target Cal</span>~1,500/day</div>
+    </div>
+  </div>
+</div>
+
+<div class="warning"><div class="warning-icon">⚠️</div><p><strong>Medical Disclaimer:</strong> Both of you should consult your doctor before beginning this program. Given your starting BMIs, a physician clearance is strongly recommended. Start at your own comfortable pace — no ego, no injury.</p></div>
+
+<div class="phase-nav">
+  <button class="phase-btn active" onclick="showPhase('p1',this)">Phase 1: Foundation (Weeks 1–4)</button>
+  <button class="phase-btn" onclick="showPhase('p2',this)">Phase 2: Build (Weeks 5–8)</button>
+  <button class="phase-btn" onclick="showPhase('p3',this)">Phase 3: Push (Weeks 9–12)</button>
+</div>
+
+<div class="schedule">
+  <div class="phase-content active" id="p1">
+    <div class="phase-desc"><div><div class="phase-badge">Phase 1 · Weeks 1–4</div></div><p>Focus on <strong>building the habit</strong> and learning movement. Low impact, 4 days per week. Prioritize form over speed.</p></div>
+    <div class="week-grid">
+      <div class="day-card"><div class="day-header cardio">Mon · Cardio</div><div class="day-body"><div class="exercise-item">20 min recumbent bike</div><div class="exercise-item">10 min treadmill walk (3.0 mph)</div><div class="exercise-item">5 min cool-down stretch</div></div></div>
+      <div class="day-card"><div class="day-header strength">Tue · Strength</div><div class="day-body"><div class="exercise-item">Leg press machine 3×12</div><div class="exercise-item">Chest press machine 3×12</div><div class="exercise-item">Seated row 3×12</div><div class="exercise-item">Shoulder press machine 3×12</div></div></div>
+      <div class="day-card rest"><div class="day-header rest-h">Wed · Rest</div><div class="day-body"><div class="rest-text">Light walk or gentle stretching</div></div></div>
+      <div class="day-card"><div class="day-header circuit">Thu · Circuit</div><div class="day-body"><div class="exercise-item">Wall sit 3×20 sec</div><div class="exercise-item">Seated leg extension 3×12</div><div class="exercise-item">Lat pulldown 3×12</div><div class="exercise-item">Plank hold 3×15 sec</div></div></div>
+      <div class="day-card"><div class="day-header cardio">Fri · Cardio</div><div class="day-body"><div class="exercise-item">30 min elliptical (low resistance)</div><div class="exercise-item">Stretch 10 min</div><div class="exercise-item">Target HR: 50–60% max</div></div></div>
+      <div class="day-card rest"><div class="day-header rest-h">Sat · Rest</div><div class="day-body"><div class="rest-text">30 min neighborhood walk together</div></div></div>
+      <div class="day-card rest"><div class="day-header rest-h">Sun · Rest</div><div class="day-body"><div class="rest-text">Full rest. Meal prep for the week.</div></div></div>
+    </div>
+  </div>
+  <div class="phase-content" id="p2">
+    <div class="phase-desc"><div><div class="phase-badge">Phase 2 · Weeks 5–8</div></div><p>Increase to <strong>5 days/week</strong>. Add intensity and duration. Cardio gets longer, strength gets heavier.</p></div>
+    <div class="week-grid">
+      <div class="day-card"><div class="day-header cardio">Mon · Cardio+</div><div class="day-body"><div class="exercise-item">30 min elliptical (moderate)</div><div class="exercise-item">10 min incline treadmill (3.5 mph)</div><div class="exercise-item">Stretch 5 min</div></div></div>
+      <div class="day-card"><div class="day-header strength">Tue · Lower Body</div><div class="day-body"><div class="exercise-item">Leg press 4×12</div><div class="exercise-item">Leg curl machine 3×12</div><div class="exercise-item">Calf raise machine 3×15</div><div class="exercise-item">Hip abductor 3×12</div></div></div>
+      <div class="day-card"><div class="day-header strength">Wed · Upper Body</div><div class="day-body"><div class="exercise-item">Chest press 4×12</div><div class="exercise-item">Lat pulldown 4×12</div><div class="exercise-item">Shoulder press 3×12</div><div class="exercise-item">Bicep curl 3×12</div><div class="exercise-item">Tricep pushdown 3×12</div></div></div>
+      <div class="day-card rest"><div class="day-header rest-h">Thu · Rest</div><div class="day-body"><div class="rest-text">Light 20-min walk or yoga</div></div></div>
+      <div class="day-card"><div class="day-header circuit">Fri · Circuit</div><div class="day-body"><div class="exercise-item">Kettlebell squat 3×12</div><div class="exercise-item">Dumbbell row 3×10 each</div><div class="exercise-item">Plank 3×30 sec</div><div class="exercise-item">Seated ab crunch 3×15</div></div></div>
+      <div class="day-card"><div class="day-header cardio">Sat · Long Cardio</div><div class="day-body"><div class="exercise-item">45 min bike or elliptical</div><div class="exercise-item">Heart rate: 60–70% max</div><div class="exercise-item">Stretch 10 min after</div></div></div>
+      <div class="day-card rest"><div class="day-header rest-h">Sun · Rest</div><div class="day-body"><div class="rest-text">Full recovery. Hydrate, sleep, prep meals.</div></div></div>
+    </div>
+  </div>
+  <div class="phase-content" id="p3">
+    <div class="phase-desc"><div><div class="phase-badge">Phase 3 · Weeks 9–12</div></div><p>Time to <strong>push your limits</strong>. Intervals, heavier lifts, compound movements. You'll be genuinely stronger than week 1.</p></div>
+    <div class="week-grid">
+      <div class="day-card active-day"><div class="day-header cardio">Mon · HIIT</div><div class="day-body"><div class="exercise-item">5 min warm-up</div><div class="exercise-item">Elliptical: 1 min fast / 2 min easy ×8</div><div class="exercise-item">5 min cool-down</div></div></div>
+      <div class="day-card"><div class="day-header strength">Tue · Lower Power</div><div class="day-body"><div class="exercise-item">Leg press 4×10 (heavy)</div><div class="exercise-item">Romanian deadlift 3×10</div><div class="exercise-item">Walking lunges 3×10</div><div class="exercise-item">Leg curl 3×12</div><div class="exercise-item">Plank 3×45 sec</div></div></div>
+      <div class="day-card"><div class="day-header strength">Wed · Upper Power</div><div class="day-body"><div class="exercise-item">Chest press 4×10 (heavy)</div><div class="exercise-item">Assisted pull-up 4×10</div><div class="exercise-item">Arnold press 3×10</div><div class="exercise-item">Seated row 3×10</div><div class="exercise-item">Dips 3×10</div></div></div>
+      <div class="day-card rest"><div class="day-header rest-h">Thu · Recovery</div><div class="day-body"><div class="rest-text">30 min yoga or stretch class at PF</div></div></div>
+      <div class="day-card"><div class="day-header circuit">Fri · Full Circuit</div><div class="day-body"><div class="exercise-item">Goblet squat 3×12</div><div class="exercise-item">Push-up 3×10</div><div class="exercise-item">Dumbbell row 3×10</div><div class="exercise-item">Step-ups 3×10</div><div class="exercise-item">Mountain climbers 3×20</div></div></div>
+      <div class="day-card"><div class="day-header cardio">Sat · Endurance</div><div class="day-body"><div class="exercise-item">60 min steady cardio</div><div class="exercise-item">Maintain 65–75% max HR</div><div class="exercise-item">Hydrate every 15 min</div></div></div>
+      <div class="day-card rest"><div class="day-header rest-h">Sun · Rest</div><div class="day-body"><div class="rest-text">Celebrate the week! 🎉</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>⚡ Nutrition Guidelines</h2>
+  <div class="calorie-cards">
+    <div class="cal-card">
+      <h3>👨 His Daily Targets</h3>
+      <div class="cal-total">~1,900</div><div class="cal-sub">calories/day (500 cal deficit)</div><br>
+      <div class="macro-bar"><div class="macro-label"><span>Protein</span><span>185g · ~740 cal</span></div><div class="bar-track"><div class="bar-fill protein" style="width:39%"></div></div></div>
+      <div class="macro-bar"><div class="macro-label"><span>Carbs</span><span>190g · ~760 cal</span></div><div class="bar-track"><div class="bar-fill carbs" style="width:40%"></div></div></div>
+      <div class="macro-bar"><div class="macro-label"><span>Fat</span><span>44g · ~400 cal</span></div><div class="bar-track"><div class="bar-fill fat" style="width:21%"></div></div></div>
+    </div>
+    <div class="cal-card">
+      <h3>👩 Her Daily Targets</h3>
+      <div class="cal-total">~1,500</div><div class="cal-sub">calories/day (500 cal deficit)</div><br>
+      <div class="macro-bar"><div class="macro-label"><span>Protein</span><span>140g · ~560 cal</span></div><div class="bar-track"><div class="bar-fill protein" style="width:37%"></div></div></div>
+      <div class="macro-bar"><div class="macro-label"><span>Carbs</span><span>150g · ~600 cal</span></div><div class="bar-track"><div class="bar-fill carbs" style="width:40%"></div></div></div>
+      <div class="macro-bar"><div class="macro-label"><span>Fat</span><span>38g · ~340 cal</span></div><div class="bar-track"><div class="bar-fill fat" style="width:23%"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🔑 Keys to Success</h2>
+  <div class="tips-grid">
+    <div class="tip-card"><h3>🏃 Heart Rate Zones</h3><ul><li>Him max HR: ~169 bpm</li><li>Her max HR: ~175 bpm</li><li>Phase 1: 50–60% max HR</li><li>Phase 2: 60–70% max HR</li><li>Phase 3: 65–75% + intervals</li></ul></div>
+    <div class="tip-card"><h3>💧 Daily Habits</h3><ul><li>Drink 80–100 oz water daily</li><li>Sleep 7–8 hours minimum</li><li>Eat protein at every meal</li><li>Avoid liquid calories / soda</li><li>10-min walk on off days</li></ul></div>
+    <div class="tip-card"><h3>🤝 Partner Rules</h3><ul><li>Never miss a Monday</li><li>Encourage, don't compete</li><li>Celebrate non-scale victories</li><li>Prep meals together Sundays</li><li>Share your progress weekly</li></ul></div>
+    <div class="tip-card"><h3>🛡️ Injury Prevention</h3><ul><li>Always warm up 5–10 min</li><li>Cool down and stretch after</li><li>Never skip rest days</li><li>Ask PF staff to check form</li><li>Sharp pain = stop immediately</li></ul></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🥩 Weekly Meal Prep</h2>
+  <p class="meal-intro">High protein · Low carb · Made for two · Prepped every Sunday</p>
+  <div class="prep-banner"><div class="prep-banner-icon">📅</div><div><strong>Sunday is Prep Day</strong><p>Set aside 2–2.5 hours every Sunday. Batch cook proteins, pre-portion meals. This eliminates daily decision fatigue and keeps you on track all week.</p></div></div>
+  <div class="meal-nav">
+    <button class="meal-btn active" onclick="showMeal('breakfast',this)">🍳 Breakfast</button>
+    <button class="meal-btn" onclick="showMeal('lunch',this)">🥗 Lunch</button>
+    <button class="meal-btn" onclick="showMeal('dinner',this)">🍖 Dinner</button>
+    <button class="meal-btn" onclick="showMeal('snacks',this)">🧀 Snacks</button>
+    <button class="meal-btn" onclick="showMeal('shopping',this)">🛒 Shopping</button>
+  </div>
+  <div class="meal-content-tab active" id="meal-breakfast">
+    <div class="meal-grid">
+      <div class="meal-card"><div class="meal-header" style="background:rgba(251,191,36,0.12);border-left:3px solid #fbbf24"><div class="meal-emoji">🥚</div><div><div class="meal-name">Egg & Sausage Muffin Cups</div><div class="meal-meta">10 min prep · 22 min cook · 12 muffins</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~28g protein</span><span class="macro c">~2g carbs</span><span class="macro f">~18g fat</span><span class="macro cal">~280 cal</span></div><div class="meal-desc">Whisk 10 eggs with salt, pepper & hot sauce. Brown 1 lb breakfast sausage. Grease muffin tin, fill with sausage, pour egg over, top with cheddar. Bake 375°F for 20–22 min. Microwave 60 sec each morning.</div><div class="meal-tags"><span class="tag">🧀 Cheese</span><span class="tag">🥚 Eggs</span><span class="tag">Freezer-friendly</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(251,191,36,0.12);border-left:3px solid #fbbf24"><div class="meal-emoji">🍳</div><div><div class="meal-name">Bacon & Cheese Egg Bake</div><div class="meal-meta">8 min prep · 30 min cook · 8 servings</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~26g protein</span><span class="macro c">~2g carbs</span><span class="macro f">~22g fat</span><span class="macro cal">~310 cal</span></div><div class="meal-desc">Cook 1 lb bacon, crumble into greased 9×13 dish. Whisk 12 eggs with ½ cup heavy cream. Pour over bacon, top with shredded cheddar. Bake 350°F for 28–30 min. Slice into squares.</div><div class="meal-tags"><span class="tag">🥓 Bacon</span><span class="tag">🧀 Cheese</span><span class="tag">Meal prep hero</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(251,191,36,0.12);border-left:3px solid #fbbf24"><div class="meal-emoji">🌯</div><div><div class="meal-name">Scrambled Egg & Sausage Bowls</div><div class="meal-meta">5 min prep · 12 min cook · 5 servings</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~32g protein</span><span class="macro c">~3g carbs</span><span class="macro f">~20g fat</span><span class="macro cal">~325 cal</span></div><div class="meal-desc">Brown 1 lb sausage with diced bell peppers and onion. Scramble 10 eggs separately. Combine in meal prep containers, top with shredded cheese. Reheat covered 90 seconds.</div><div class="meal-tags"><span class="tag">🌭 Sausage</span><span class="tag">🥚 Eggs</span><span class="tag">5-day supply</span></div></div></div>
+    </div>
+    <div class="meal-tip">💡 <strong>Pro Tip:</strong> Make 2 different breakfasts on Sunday — rotate Mon/Wed/Fri and Tue/Thu so you don't eat the same thing two days in a row.</div>
+  </div>
+  <div class="meal-content-tab" id="meal-lunch">
+    <div class="meal-grid">
+      <div class="meal-card"><div class="meal-header" style="background:rgba(59,130,246,0.12);border-left:3px solid #3b82f6"><div class="meal-emoji">🍗</div><div><div class="meal-name">Sheet Pan Herb Chicken Thighs</div><div class="meal-meta">10 min prep · 35 min cook · 8 servings</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~38g protein</span><span class="macro c">~1g carbs</span><span class="macro f">~14g fat</span><span class="macro cal">~280 cal</span></div><div class="meal-desc">Toss 8 chicken thighs with olive oil, garlic powder, Italian seasoning. Roast at 425°F for 35 min. Pair with roasted broccoli or green beans on the same pan.</div><div class="meal-tags"><span class="tag">🍗 Chicken</span><span class="tag">Sheet pan</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(59,130,246,0.12);border-left:3px solid #3b82f6"><div class="meal-emoji">🥩</div><div><div class="meal-name">Taco Ground Beef Bowls</div><div class="meal-meta">5 min prep · 15 min cook · 5 servings</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~36g protein</span><span class="macro c">~4g carbs</span><span class="macro f">~20g fat</span><span class="macro cal">~340 cal</span></div><div class="meal-desc">Brown 2 lbs ground beef with taco seasoning. Top with cheddar, sour cream, diced tomatoes. Serve over shredded lettuce or cauliflower rice.</div><div class="meal-tags"><span class="tag">🥩 Beef</span><span class="tag">🧀 Cheese</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(59,130,246,0.12);border-left:3px solid #3b82f6"><div class="meal-emoji">🥗</div><div><div class="meal-name">Bacon Chicken Caesar Jars</div><div class="meal-meta">15 min prep · No cook · 5 jars</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~40g protein</span><span class="macro c">~5g carbs</span><span class="macro f">~18g fat</span><span class="macro cal">~340 cal</span></div><div class="meal-desc">Layer in mason jars: Caesar dressing, sliced chicken, crumbled bacon, parmesan, romaine on top. Seal and fridge up to 4 days. Shake to dress when ready.</div><div class="meal-tags"><span class="tag">🍗 Chicken</span><span class="tag">🥓 Bacon</span><span class="tag">No reheat</span></div></div></div>
+    </div>
+    <div class="meal-tip">💡 <strong>Pro Tip:</strong> Grill 4–5 lbs chicken Sunday — use half for lunch salads and half for dinners. One cook, multiple meals.</div>
+  </div>
+  <div class="meal-content-tab" id="meal-dinner">
+    <div class="meal-grid">
+      <div class="meal-card"><div class="meal-header" style="background:rgba(239,68,68,0.12);border-left:3px solid #ef4444"><div class="meal-emoji">🥩</div><div><div class="meal-name">Slow Cooker Chuck Roast</div><div class="meal-meta">10 min prep · 8 hrs low · 8 servings</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~42g protein</span><span class="macro c">~3g carbs</span><span class="macro f">~18g fat</span><span class="macro cal">~340 cal</span></div><div class="meal-desc">Season 3–4 lb chuck roast, sear in hot pan. Add to slow cooker with beef broth, onion, bay leaf. Cook low 8 hours. Shred with forks. Freezes perfectly.</div><div class="meal-tags"><span class="tag">🥩 Beef</span><span class="tag">Slow cooker</span><span class="tag">Freezer-friendly</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(239,68,68,0.12);border-left:3px solid #ef4444"><div class="meal-emoji">🍗</div><div><div class="meal-name">Cheesy Stuffed Chicken</div><div class="meal-meta">15 min prep · 30 min cook · 4 servings</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~48g protein</span><span class="macro c">~2g carbs</span><span class="macro f">~16g fat</span><span class="macro cal">~340 cal</span></div><div class="meal-desc">Butterfly chicken breasts, stuff with bacon and cream cheese + cheddar. Sear 3 min/side, finish in oven at 400°F for 20 min. Serve with sautéed spinach.</div><div class="meal-tags"><span class="tag">🍗 Chicken</span><span class="tag">🥓 Bacon</span><span class="tag">🧀 Cheese</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(239,68,68,0.12);border-left:3px solid #ef4444"><div class="meal-emoji">🍔</div><div><div class="meal-name">Bunless Bacon Cheeseburgers</div><div class="meal-meta">10 min prep · 15 min cook · 8 patties</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~36g protein</span><span class="macro c">~1g carbs</span><span class="macro f">~28g fat</span><span class="macro cal">~400 cal</span></div><div class="meal-desc">Mix 2 lbs 80/20 beef with Worcestershire, garlic powder. Form 8 patties, cook on cast iron. Top with cheese and bacon. Serve in lettuce wraps.</div><div class="meal-tags"><span class="tag">🥩 Beef</span><span class="tag">🥓 Bacon</span><span class="tag">Batch cook</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(239,68,68,0.12);border-left:3px solid #ef4444"><div class="meal-emoji">🍳</div><div><div class="meal-name">Sausage & Pepper Skillet</div><div class="meal-meta">10 min prep · 20 min cook · 6 servings</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~28g protein</span><span class="macro c">~6g carbs</span><span class="macro f">~22g fat</span><span class="macro cal">~330 cal</span></div><div class="meal-desc">Brown sliced smoked sausage. Sauté bell peppers, onions, garlic. Return sausage, add broth and seasonings. Simmer 5 min. Finish with mozzarella.</div><div class="meal-tags"><span class="tag">🌭 Sausage</span><span class="tag">🧀 Cheese</span><span class="tag">One-pan</span></div></div></div>
+    </div>
+    <div class="meal-tip">💡 <strong>Pro Tip:</strong> Start chuck roast Sunday morning before you leave for the gym. Dinner for 3–4 nights with zero weeknight effort.</div>
+  </div>
+  <div class="meal-content-tab" id="meal-snacks">
+    <div class="meal-grid">
+      <div class="meal-card"><div class="meal-header" style="background:rgba(34,197,94,0.1);border-left:3px solid #22c55e"><div class="meal-emoji">🥚</div><div><div class="meal-name">Hard Boiled Eggs</div><div class="meal-meta">2 min prep · 12 min cook · Dozen at a time</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~12g protein</span><span class="macro c">~1g carbs</span><span class="macro f">~10g fat</span><span class="macro cal">~140 cal</span></div><div class="meal-desc">Boil a dozen every Sunday. Cold water → boil → off heat → cover 12 min → ice bath. Store in shell, fridge 7 days. The most underrated meal prep item there is.</div><div class="meal-tags"><span class="tag">🥚 Eggs</span><span class="tag">Zero-effort</span><span class="tag">Portable</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(34,197,94,0.1);border-left:3px solid #22c55e"><div class="meal-emoji">🧀</div><div><div class="meal-name">Cheese & Deli Meat Roll-Ups</div><div class="meal-meta">5 min prep · No cook · 5-day supply</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~20g protein</span><span class="macro c">~1g carbs</span><span class="macro f">~14g fat</span><span class="macro cal">~210 cal</span></div><div class="meal-desc">Lay deli turkey or ham flat. Place string cheese in center, roll up tight. Pre-roll 10–12, store in zip bag. Ready in 30 seconds.</div><div class="meal-tags"><span class="tag">🧀 Cheese</span><span class="tag">No-cook</span><span class="tag">Grab-and-go</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(34,197,94,0.1);border-left:3px solid #22c55e"><div class="meal-emoji">🥓</div><div><div class="meal-name">Bacon-Wrapped Chicken Bites</div><div class="meal-meta">10 min prep · 25 min cook · ~24 bites</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~22g protein</span><span class="macro c">~1g carbs</span><span class="macro f">~12g fat</span><span class="macro cal">~200 cal</span></div><div class="meal-desc">Cut chicken into 1-inch cubes. Wrap each in half-strip bacon, toothpick. Season with garlic, black pepper. Bake 400°F 22–25 min until crispy.</div><div class="meal-tags"><span class="tag">🍗 Chicken</span><span class="tag">🥓 Bacon</span><span class="tag">Air-fryer friendly</span></div></div></div>
+      <div class="meal-card"><div class="meal-header" style="background:rgba(34,197,94,0.1);border-left:3px solid #22c55e"><div class="meal-emoji">🧆</div><div><div class="meal-name">Mini Beef & Cheese Meatballs</div><div class="meal-meta">15 min prep · 20 min cook · ~30 meatballs</div></div></div><div class="meal-body"><div class="meal-macros"><span class="macro p">~24g protein</span><span class="macro c">~2g carbs</span><span class="macro f">~16g fat</span><span class="macro cal">~245 cal</span></div><div class="meal-desc">Mix 2 lbs ground beef with egg, garlic powder, Italian seasoning, parmesan. Roll into 1-inch balls. Bake 400°F 18–20 min. Store 5 days.</div><div class="meal-tags"><span class="tag">🥩 Beef</span><span class="tag">🧀 Cheese</span><span class="tag">Freezer-friendly</span></div></div></div>
+    </div>
+    <div class="meal-tip">💡 <strong>Pro Tip:</strong> Keep a "snack box" in the fridge with hard-boiled eggs, roll-ups, and cheese cubes — when hunger strikes, open one box instead of raiding the pantry.</div>
+  </div>
+  <div class="meal-content-tab" id="meal-shopping">
+    <div class="shop-intro">Everything you need for one week of meals for two people.</div>
+    <div class="shop-grid">
+      <div class="shop-card"><div class="shop-header">🥩 Proteins</div><div class="shop-item"><span class="shop-check">□</span>Ground beef 80/20 — 4 lbs</div><div class="shop-item"><span class="shop-check">□</span>Chicken breasts — 3–4 lbs</div><div class="shop-item"><span class="shop-check">□</span>Chicken thighs (bone-in) — 8 pieces</div><div class="shop-item"><span class="shop-check">□</span>Breakfast sausage — 2 lbs</div><div class="shop-item"><span class="shop-check">□</span>Smoked sausage — 2 lbs</div><div class="shop-item"><span class="shop-check">□</span>Bacon — 2 lbs</div><div class="shop-item"><span class="shop-check">□</span>Chuck roast — 3–4 lbs</div><div class="shop-item"><span class="shop-check">□</span>Eggs — 2 dozen</div><div class="shop-item"><span class="shop-check">□</span>Deli meat — 1 lb</div></div>
+      <div class="shop-card"><div class="shop-header">🧀 Dairy</div><div class="shop-item"><span class="shop-check">□</span>Shredded cheddar — 2 lbs</div><div class="shop-item"><span class="shop-check">□</span>Shredded mozzarella — 1 lb</div><div class="shop-item"><span class="shop-check">□</span>Parmesan — 8 oz</div><div class="shop-item"><span class="shop-check">□</span>Cream cheese — 8 oz</div><div class="shop-item"><span class="shop-check">□</span>String cheese — 1 bag</div><div class="shop-item"><span class="shop-check">□</span>Heavy cream — 1 pint</div><div class="shop-item"><span class="shop-check">□</span>Sour cream — 16 oz</div><div class="shop-item"><span class="shop-check">□</span>Butter — 1 lb</div></div>
+      <div class="shop-card"><div class="shop-header">🥦 Produce</div><div class="shop-item"><span class="shop-check">□</span>Broccoli — 2 lbs</div><div class="shop-item"><span class="shop-check">□</span>Bell peppers — 4–6</div><div class="shop-item"><span class="shop-check">□</span>Romaine lettuce — 2 heads</div><div class="shop-item"><span class="shop-check">□</span>Spinach — 10 oz bag</div><div class="shop-item"><span class="shop-check">□</span>Zucchini — 4 medium</div><div class="shop-item"><span class="shop-check">□</span>Yellow onion — 3 large</div><div class="shop-item"><span class="shop-check">□</span>Garlic</div><div class="shop-item"><span class="shop-check">□</span>Cauliflower — 1 head</div></div>
+      <div class="shop-card"><div class="shop-header">🧂 Pantry</div><div class="shop-item"><span class="shop-check">□</span>Olive oil</div><div class="shop-item"><span class="shop-check">□</span>Beef broth — 32 oz</div><div class="shop-item"><span class="shop-check">□</span>Chicken broth — 32 oz</div><div class="shop-item"><span class="shop-check">□</span>Taco seasoning — 2 packets</div><div class="shop-item"><span class="shop-check">□</span>Italian seasoning, garlic powder, paprika</div><div class="shop-item"><span class="shop-check">□</span>Worcestershire sauce</div><div class="shop-item"><span class="shop-check">□</span>Caesar dressing (full fat)</div><div class="shop-item"><span class="shop-check">□</span>Hot sauce, mustard, mayo</div></div>
+      <div class="shop-card" style="border-color:rgba(251,191,36,0.4)"><div class="shop-header" style="color:var(--pf-yellow)">📋 Sunday Prep Order</div><div class="shop-item" style="color:#ccc"><span style="color:var(--pf-yellow);font-weight:700">1.</span> Start slow cooker chuck roast</div><div class="shop-item" style="color:#ccc"><span style="color:var(--pf-yellow);font-weight:700">2.</span> Boil a dozen eggs</div><div class="shop-item" style="color:#ccc"><span style="color:var(--pf-yellow);font-weight:700">3.</span> Cook bacon in oven (whole 2 lbs)</div><div class="shop-item" style="color:#ccc"><span style="color:var(--pf-yellow);font-weight:700">4.</span> Bake egg muffin cups or egg bake</div><div class="shop-item" style="color:#ccc"><span style="color:var(--pf-yellow);font-weight:700">5.</span> Roast sheet pan chicken</div><div class="shop-item" style="color:#ccc"><span style="color:var(--pf-yellow);font-weight:700">6.</span> Brown sausage & peppers</div><div class="shop-item" style="color:#ccc"><span style="color:var(--pf-yellow);font-weight:700">7.</span> Assemble salad jars & snack boxes</div><div class="shop-item" style="color:#ccc"><span style="color:var(--pf-yellow);font-weight:700">8.</span> Label everything with days</div></div>
+    </div>
+    <div class="weekly-overview">
+      <h3>📆 Sample Week at a Glance</h3>
+      <div class="week-meal-grid">
+        <div class="wm-header">Day</div><div class="wm-header">Breakfast</div><div class="wm-header">Lunch</div><div class="wm-header">Dinner</div><div class="wm-header">Snack</div>
+        <div class="wm-day">Monday</div><div class="wm-cell">Egg & Sausage Muffin Cups</div><div class="wm-cell">Sheet Pan Chicken</div><div class="wm-cell">Chuck Roast</div><div class="wm-cell">Hard Boiled Eggs</div>
+        <div class="wm-day">Tuesday</div><div class="wm-cell">Bacon & Cheese Egg Bake</div><div class="wm-cell">Taco Beef Bowls</div><div class="wm-cell">Bunless Cheeseburgers</div><div class="wm-cell">Cheese Roll-Ups</div>
+        <div class="wm-day">Wednesday</div><div class="wm-cell">Egg Muffin Cups</div><div class="wm-cell">Caesar Salad Jar</div><div class="wm-cell">Sausage & Peppers</div><div class="wm-cell">Bacon Chicken Bites</div>
+        <div class="wm-day">Thursday</div><div class="wm-cell">Scrambled Egg Bowls</div><div class="wm-cell">Sheet Pan Chicken</div><div class="wm-cell">Chuck Roast (leftover)</div><div class="wm-cell">Beef Meatballs</div>
+        <div class="wm-day">Friday</div><div class="wm-cell">Bacon Egg Bake</div><div class="wm-cell">Taco Beef Bowls</div><div class="wm-cell">Cheesy Stuffed Chicken</div><div class="wm-cell">Hard Boiled Eggs</div>
+        <div class="wm-day">Sat/Sun</div><div class="wm-cell">Scrambled eggs + bacon</div><div class="wm-cell">Leftovers / freestyle</div><div class="wm-cell">Grill day! 🔥</div><div class="wm-cell">Your choice</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🏆 Milestone Roadmap</h2>
+  <div class="milestones">
+    <div class="milestone"><div class="m-dot current">🌱</div><h4>Week 1</h4><p>First workout. You showed up.</p></div>
+    <div class="milestone"><div class="m-dot">💪</div><h4>Week 4</h4><p>Habit formed. 4–8 lbs lost each.</p></div>
+    <div class="milestone"><div class="m-dot">🔥</div><h4>Week 8</h4><p>Clothes fit differently.</p></div>
+    <div class="milestone"><div class="m-dot">🏅</div><h4>Week 12</h4><p>10–20+ lbs down.</p></div>
+    <div class="milestone"><div class="m-dot">⭐</div><h4>Month 6</h4><p>New lifestyle. Plan next 12!</p></div>
+  </div>
+</div>
+
+</div><!-- end page-plan -->
+
+<!-- ══════════════════════════════════════
+     PAGE: DASHBOARD
+══════════════════════════════════════ -->
+<div class="page" id="page-dashboard">
+  <div class="tracker-header">
+    <h2>📊 Dashboard</h2>
+    <p>Your combined progress at a glance</p>
+  </div>
+
+  <div class="log-actions">
+    <button class="log-btn green" onclick="showPage('weight');document.getElementById('logWeightSection').scrollIntoView({behavior:'smooth'})">⚖️ Log Weight</button>
+    <button class="log-btn blue" onclick="showPage('workouts');document.getElementById('logWorkoutSection').scrollIntoView({behavior:'smooth'})">🏋️ Log Workout</button>
+  </div>
+
+  <div class="stat-row">
+    <div class="mini-stat" id="dash-him-workouts">
+      <div class="mini-stat-val" style="color:var(--pf-blue)">0</div>
+      <div class="mini-stat-label">👨 Workouts</div>
+    </div>
+    <div class="mini-stat" id="dash-her-workouts">
+      <div class="mini-stat-val" style="color:var(--pf-pink)">0</div>
+      <div class="mini-stat-label">👩 Workouts</div>
+    </div>
+    <div class="mini-stat" id="dash-him-lost">
+      <div class="mini-stat-val" style="color:var(--pf-green)">0</div>
+      <div class="mini-stat-label">👨 Lbs Lost</div>
+    </div>
+    <div class="mini-stat" id="dash-her-lost">
+      <div class="mini-stat-val" style="color:var(--pf-green)">0</div>
+      <div class="mini-stat-label">👩 Lbs Lost</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="big-stat him-card">
+      <div class="user-tag"><span style="color:var(--pf-blue)">👨</span> Him</div>
+      <div class="big-stat-label">Current Weight</div>
+      <div class="big-stat-val" id="dash-him-weight" style="color:var(--pf-blue)">275</div>
+      <div class="big-stat-sub" id="dash-him-sub">Starting weight — no weigh-ins yet</div>
+      <div class="goal-bar-wrap">
+        <div class="goal-bar-label"><span>Start: 275</span><span>Goal: 220</span></div>
+        <div class="goal-bar-track"><div class="goal-bar-fill him" id="dash-him-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="big-stat her-card">
+      <div class="user-tag"><span style="color:var(--pf-pink)">👩</span> Her</div>
+      <div class="big-stat-label">Current Weight</div>
+      <div class="big-stat-val" id="dash-her-weight" style="color:var(--pf-pink)">190</div>
+      <div class="big-stat-sub" id="dash-her-sub">Starting weight — no weigh-ins yet</div>
+      <div class="goal-bar-wrap">
+        <div class="goal-bar-label"><span>Start: 190</span><span>Goal: 150</span></div>
+        <div class="goal-bar-track"><div class="goal-bar-fill her" id="dash-her-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-section">
+    <div class="chart-card">
+      <div class="chart-title">
+        ⚖️ Weight Over Time
+        <div class="chart-legend">
+          <span><span class="legend-dot" style="background:var(--pf-blue)"></span>Him</span>
+          <span><span class="legend-dot" style="background:var(--pf-pink)"></span>Her</span>
+        </div>
+      </div>
+      <div id="weightChart" class="div-chart"></div>
+      <div id="weightChartEmpty" class="empty-state" style="display:none"><span class="big-emoji">📈</span>Log your first weigh-in to see your weight chart!</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">
+        🏋️ Weekly Workouts
+        <div class="chart-legend">
+          <span><span class="legend-dot" style="background:var(--pf-blue)"></span>Him</span>
+          <span><span class="legend-dot" style="background:var(--pf-pink)"></span>Her</span>
+        </div>
+      </div>
+      <div id="workoutChart" class="div-chart"></div>
+      <div id="workoutChartEmpty" class="empty-state" style="display:none"><span class="big-emoji">🏋️</span>Log workouts to see your weekly activity chart!</div>
+    </div>
+  </div>
+
+  <div class="activity-section">
+    <div class="activity-title">Recent Activity</div>
+    <div class="activity-list" id="recentActivity">
+      <div class="empty-state"><span class="big-emoji">🚀</span>Nothing logged yet — hit Log Workout or Log Weight to get started!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: WORKOUTS
+══════════════════════════════════════ -->
+<div class="page" id="page-workouts">
+  <div class="log-page">
+    <h2>🏋️ Workout Log</h2>
+    <p class="sub">Log each session, check off exercises, track your consistency</p>
+
+    <div id="logWorkoutSection" class="workout-form">
+      <div style="font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;margin-bottom:16px">+ Log Today's Workout</div>
+
+      <div style="margin-bottom:16px">
+        <div class="form-label">Who worked out?</div>
+        <div class="who-toggle">
+          <button class="who-toggle-btn him active" id="wo-him-btn" onclick="selectWoUser('him')">👨 Him</button>
+          <button class="who-toggle-btn her" id="wo-her-btn" onclick="selectWoUser('her')">👩 Her</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Phase</label>
+          <select class="form-select" id="wo-phase" onchange="updateExerciseList()">
+            <option value="Phase 1">Phase 1 – Foundation</option>
+            <option value="Phase 2">Phase 2 – Build</option>
+            <option value="Phase 3">Phase 3 – Push</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Day</label>
+          <select class="form-select" id="wo-day" onchange="updateExerciseList()">
+            <option>Mon</option><option>Tue</option><option>Wed</option><option>Thu</option><option>Fri</option><option>Sat</option><option>Sun</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Duration (minutes)</label>
+          <input type="number" class="form-input" id="wo-duration" value="45" min="5" max="180">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" id="wo-date">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Check off completed exercises</label>
+        <div class="exercise-checklist" id="exerciseChecklist"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Notes (optional)</label>
+        <textarea class="form-textarea" id="wo-notes" placeholder="Increased leg press to 90 lbs. Feeling strong!"></textarea>
+      </div>
+
+      <button class="save-btn blue" onclick="saveWorkout()">💾 Save Workout</button>
+    </div>
+
+    <div class="history-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div class="history-title">Workout History</div>
+        <div style="display:flex;gap:8px">
+          <button class="who-toggle-btn him active" id="hist-him-btn" style="font-size:12px;padding:7px 14px;border-radius:8px" onclick="selectHistUser('him')">👨 Him</button>
+          <button class="who-toggle-btn her" id="hist-her-btn" style="font-size:12px;padding:7px 14px;border-radius:8px" onclick="selectHistUser('her')">👩 Her</button>
+        </div>
+      </div>
+      <div id="workoutHistory"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: WEIGHT
+══════════════════════════════════════ -->
+<div class="page" id="page-weight">
+  <div class="log-page">
+    <h2>⚖️ Weight Tracker</h2>
+    <p class="sub">Log weekly weigh-ins — same day each week, morning, before eating</p>
+
+    <div class="weight-grid">
+      <div class="weight-card">
+        <h3><span style="color:var(--pf-blue)">👨</span> Him</h3>
+        <div class="current-weight him" id="wt-him-current">275</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">lbs current</div>
+        <div class="weight-change" id="wt-him-change" style="color:var(--muted)">No weigh-ins yet</div>
+        <div class="goal-bar-wrap">
+          <div class="goal-bar-label"><span>275 lbs start</span><span>220 lbs goal</span></div>
+          <div class="goal-bar-track"><div class="goal-bar-fill him" id="wt-him-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="weight-card">
+        <h3><span style="color:var(--pf-pink)">👩</span> Her</h3>
+        <div class="current-weight her" id="wt-her-current">190</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">lbs current</div>
+        <div class="weight-change" id="wt-her-change" style="color:var(--muted)">No weigh-ins yet</div>
+        <div class="goal-bar-wrap">
+          <div class="goal-bar-label"><span>190 lbs start</span><span>150 lbs goal</span></div>
+          <div class="goal-bar-track"><div class="goal-bar-fill her" id="wt-her-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="logWeightSection" class="workout-form">
+      <div style="font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;margin-bottom:16px">+ Log Weigh-In</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">His Weight (lbs)</label>
+          <input type="number" class="form-input" id="wt-him-input" placeholder="e.g. 272.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Her Weight (lbs)</label>
+          <input type="number" class="form-input" id="wt-her-input" placeholder="e.g. 187.0" step="0.1">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">His Waist (inches, optional)</label>
+          <input type="number" class="form-input" id="wt-him-waist" placeholder="e.g. 44" step="0.5">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Her Waist (inches, optional)</label>
+          <input type="number" class="form-input" id="wt-her-waist" placeholder="e.g. 36" step="0.5">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input type="date" class="form-input" id="wt-date" style="max-width:220px">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes (optional)</label>
+        <textarea class="form-textarea" id="wt-notes" placeholder="Feeling good! Pants are looser this week." style="height:64px"></textarea>
+      </div>
+      <button class="save-btn green" onclick="saveWeight()">💾 Save Weigh-In</button>
+    </div>
+
+    <div style="margin-top:8px">
+      <div class="history-title" style="margin-bottom:12px">Weigh-In History</div>
+      <div id="weightHistoryTable"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: BADGES
+══════════════════════════════════════ -->
+<div class="page" id="page-badges">
+  <div class="tracker-header">
+    <h2>🏆 Achievement Badges</h2>
+    <p>Unlock badges as you hit milestones — keep going!</p>
+  </div>
+  <div style="padding:0 28px;margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="who-toggle-btn him active" id="badge-him-btn" style="font-size:12px;padding:8px 18px;border-radius:8px" onclick="selectBadgeUser('him')">👨 Him</button>
+    <button class="who-toggle-btn her" id="badge-her-btn" style="font-size:12px;padding:8px 18px;border-radius:8px" onclick="selectBadgeUser('her')">👩 Her</button>
+  </div>
+  <div class="badges-grid" id="badgesGrid"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// DATA & STORAGE
+// ════════════════════════════════════════
+const STORAGE_KEY = 'fitcouple_v3';
+const HIM = { name:'Him', emoji:'👨', color:'#3b82f6', start:275, goal:220 };
+const HER = { name:'Her', emoji:'👩', color:'#d946ef', start:190, goal:150 };
+
+const EXERCISES = {
+  'Phase 1': {
+    Mon: ['20 min recumbent bike (easy pace)','10 min treadmill walk (3.0 mph)','5 min cool-down stretch'],
+    Tue: ['Leg press machine 3×12','Chest press machine 3×12','Seated row 3×12','Shoulder press machine 3×12'],
+    Wed: ['Light walk or gentle stretching'],
+    Thu: ['Wall sit 3×20 sec','Seated leg extension 3×12','Lat pulldown 3×12','Plank hold 3×15 sec'],
+    Fri: ['30 min elliptical (low resistance)','Stretch 10 min','Target HR: 50–60% max'],
+    Sat: ['30 min neighborhood walk together'],
+    Sun: ['Full rest — meal prep day']
+  },
+  'Phase 2': {
+    Mon: ['30 min elliptical (moderate pace)','10 min incline treadmill (3.5 mph)','Stretch 5 min'],
+    Tue: ['Leg press 4×12','Leg curl machine 3×12','Calf raise machine 3×15','Hip abductor 3×12'],
+    Wed: ['Chest press 4×12','Lat pulldown 4×12','Shoulder press 3×12','Bicep curl 3×12','Tricep pushdown 3×12'],
+    Thu: ['Light 20-min walk or yoga video'],
+    Fri: ['Kettlebell squat 3×12','Dumbbell row 3×10 each','Plank 3×30 sec','Seated ab crunch 3×15'],
+    Sat: ['45 min bike or elliptical','Heart rate: 60–70% max','Stretch 10 min after'],
+    Sun: ['Full recovery — hydrate, sleep, prep meals']
+  },
+  'Phase 3': {
+    Mon: ['5 min warm-up walk','Elliptical: 1 min fast / 2 min easy × 8','5 min cool-down'],
+    Tue: ['Leg press 4×10 (heavy)','Romanian deadlift 3×10','Walking lunges 3×10 each','Leg curl 3×12','Plank 3×45 sec'],
+    Wed: ['Chest press 4×10 (heavy)','Assisted pull-up 4×10','Arnold press 3×10','Seated row 3×10','Dips 3×10'],
+    Thu: ['30 min yoga or stretching class at PF'],
+    Fri: ['Goblet squat 3×12','Push-up 3×10','Dumbbell row 3×10','Step-ups 3×10','Mountain climbers 3×20','Russian twist 3×15'],
+    Sat: ['60 min steady cardio','Maintain 65–75% max HR','Hydrate every 15 min'],
+    Sun: ['Celebrate the week! 🎉']
+  }
+};
+
+const BADGES = [
+  { id:'first_wo',  icon:'🌱', name:'First Step',      desc:'Log your first workout',                 check: s => s.workouts.length >= 1 },
+  { id:'wo5',       icon:'💪', name:'5 Workouts',       desc:'Complete 5 workouts',                    check: s => s.workouts.length >= 5 },
+  { id:'wo10',      icon:'🔥', name:'On Fire',           desc:'10 workouts logged',                     check: s => s.workouts.length >= 10 },
+  { id:'wo25',      icon:'⚡', name:'Unstoppable',       desc:'25 workouts completed',                  check: s => s.workouts.length >= 25 },
+  { id:'wo45',      icon:'🏅', name:'Iron Habit',        desc:'45 workouts — Phase 3 done!',            check: s => s.workouts.length >= 45 },
+  { id:'first_wt',  icon:'⚖️', name:'First Weigh-In',   desc:'Log your first weigh-in',                check: s => s.weights.length >= 1 },
+  { id:'lost5',     icon:'👊', name:'5 Lbs Down',        desc:'Lost your first 5 lbs',                  check: (s,start) => weightLost(s,start) >= 5 },
+  { id:'lost10',    icon:'🚀', name:'10 Lbs Down',       desc:'Double digits! Incredible.',             check: (s,start) => weightLost(s,start) >= 10 },
+  { id:'lost20',    icon:'💥', name:'20 Lbs Down',       desc:'Life-changing progress',                 check: (s,start) => weightLost(s,start) >= 20 },
+  { id:'lost30',    icon:'🌟', name:'30 Lbs Down',       desc:'You are an inspiration',                 check: (s,start) => weightLost(s,start) >= 30 },
+  { id:'streak7',   icon:'📅', name:'Week Streak',       desc:'7 days with at least 1 workout',        check: s => hasStreak(s.workouts, 7) },
+  { id:'goal',      icon:'🏆', name:'Goal Reached',      desc:'Hit your target weight!',               check: (s,start,goal) => weightLost(s,start) >= (start - goal) },
+];
+
+function weightLost(s, start) {
+  if (!s.weights.length) return 0;
+  const latest = s.weights[s.weights.length-1].weight;
+  return Math.max(0, start - latest);
+}
+
+function hasStreak(workouts, days) {
+  if (!workouts.length) return false;
+  const dates = [...new Set(workouts.map(w => w.date))].sort().reverse();
+  if (dates.length < 1) return false;
+  let streak = 1, prev = new Date(dates[0]+'T12:00:00');
+  for (let i=1; i<dates.length; i++) {
+    const curr = new Date(dates[i]+'T12:00:00');
+    const diff = (prev - curr) / 86400000;
+    if (diff <= 1) { streak++; prev = curr; }
+    else break;
+  }
+  return streak >= days;
+}
+
+let appData = loadData();
+let activeWoUser = 'him';
+let activeHistUser = 'him';
+let activeBadgeUser = 'him';
+
+function loadData() {
+  try {
+    const r = localStorage.getItem(STORAGE_KEY);
+    if (r) return JSON.parse(r);
+  } catch(e) {}
+  return {
+    him: { workouts:[], weights:[] },
+    her: { workouts:[], weights:[] }
+  };
+}
+
+function saveAppData() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); } catch(e) {}
+}
+
+// ════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const map = {plan:0, dashboard:1, workouts:2, weight:3, badges:4};
+  if (map[id] !== undefined) tabs[map[id]].classList.add('active');
+  if (id !== 'plan') refreshAll();
+  window.scrollTo(0,0);
+}
+
+function showPhase(id, btn) {
+  document.querySelectorAll('.phase-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.phase-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showMeal(id, btn) {
+  document.querySelectorAll('.meal-content-tab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.meal-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('meal-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ════════════════════════════════════════
+// WORKOUT LOGGING
+// ════════════════════════════════════════
+function selectWoUser(u) {
+  activeWoUser = u;
+  document.getElementById('wo-him-btn').classList.toggle('active', u==='him');
+  document.getElementById('wo-her-btn').classList.toggle('active', u==='her');
+}
+
+function selectHistUser(u) {
+  activeHistUser = u;
+  document.getElementById('hist-him-btn').classList.toggle('active', u==='him');
+  document.getElementById('hist-her-btn').classList.toggle('active', u==='her');
+  renderWorkoutHistory();
+}
+
+function updateExerciseList() {
+  const phase = document.getElementById('wo-phase').value;
+  const day = document.getElementById('wo-day').value;
+  const exes = (EXERCISES[phase] && EXERCISES[phase][day]) || [];
+  const container = document.getElementById('exerciseChecklist');
+  container.innerHTML = exes.map((ex,i) => `
+    <label class="exercise-check-item" id="ex-item-${i}">
+      <input type="checkbox" id="ex-${i}" onchange="this.closest('label').classList.toggle('done',this.checked)">
+      <span>${ex}</span>
+    </label>
+  `).join('');
+}
+
+function saveWorkout() {
+  const phase = document.getElementById('wo-phase').value;
+  const day = document.getElementById('wo-day').value;
+  const duration = document.getElementById('wo-duration').value;
+  const date = document.getElementById('wo-date').value;
+  const notes = document.getElementById('wo-notes').value.trim();
+  if (!date) { showToast('⚠️ Please select a date'); return; }
+
+  const checkboxes = document.querySelectorAll('#exerciseChecklist input[type=checkbox]');
+  const completed = [];
+  checkboxes.forEach(cb => { if (cb.checked) completed.push(cb.nextElementSibling.textContent); });
+
+  appData[activeWoUser].workouts.push({
+    id: Date.now(),
+    date, phase, day,
+    duration: parseInt(duration)||45,
+    completed,
+    notes
+  });
+  saveAppData();
+
+  // Reset form
+  document.getElementById('wo-notes').value = '';
+  updateExerciseList();
+  document.getElementById('wo-date').value = todayStr();
+
+  renderWorkoutHistory();
+  showToast('✅ Workout saved!');
+}
+
+function deleteWorkout(user, id) {
+  appData[user].workouts = appData[user].workouts.filter(w => w.id !== id);
+  saveAppData();
+  renderWorkoutHistory();
+  renderDashboard();
+  showToast('🗑️ Workout deleted');
+}
+
+function renderWorkoutHistory() {
+  const container = document.getElementById('workoutHistory');
+  const list = appData[activeHistUser].workouts.slice().reverse();
+  if (!list.length) {
+    container.innerHTML = '<div class="empty-state"><span class="big-emoji">🏋️</span>No workouts logged yet — start logging above!</div>';
+    return;
+  }
+  const u = activeHistUser;
+  container.innerHTML = list.map(w => {
+    const phaseClass = w.phase==='Phase 1'?'phase1':w.phase==='Phase 2'?'phase2':'phase3';
+    const pct = Math.round((w.completed.length / Math.max(1,(EXERCISES[w.phase]&&EXERCISES[w.phase][w.day])||['x']).length)*100);
+    return `<div class="history-item">
+      <div class="history-main">
+        <div class="history-title-row">
+          <span class="history-name">${w.phase} · ${w.day}</span>
+          <span class="badge-pill ${phaseClass}">${w.phase}</span>
+          <span class="badge-pill ${u}">${u==='him'?'👨':'👩'} ${u==='him'?'Him':'Her'}</span>
+        </div>
+        <div class="history-date">${fmtDate(w.date)} · ${w.duration} min${w.completed.length?` · ${w.completed.length} exercises done`:''}</div>
+        ${w.completed.length ? `<div class="history-detail">✓ ${w.completed.join(' · ')}</div>` : ''}
+        ${w.notes ? `<div class="history-notes">"${w.notes}"</div>` : ''}
+      </div>
+      <button class="del-btn" onclick="deleteWorkout('${u}',${w.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════
+// WEIGHT LOGGING
+// ════════════════════════════════════════
+function saveWeight() {
+  const date = document.getElementById('wt-date').value;
+  const himW = document.getElementById('wt-him-input').value;
+  const herW = document.getElementById('wt-her-input').value;
+  const himWaist = document.getElementById('wt-him-waist').value;
+  const herWaist = document.getElementById('wt-her-waist').value;
+  const notes = document.getElementById('wt-notes').value.trim();
+  if (!date) { showToast('⚠️ Please select a date'); return; }
+  if (!himW && !herW) { showToast('⚠️ Enter at least one weight'); return; }
+
+  if (himW) {
+    appData.him.weights = appData.him.weights.filter(w => w.date !== date);
+    appData.him.weights.push({ id:Date.now(), date, weight:parseFloat(himW), waist:himWaist?parseFloat(himWaist):null, notes });
+    appData.him.weights.sort((a,b) => a.date.localeCompare(b.date));
+  }
+  if (herW) {
+    appData.her.weights = appData.her.weights.filter(w => w.date !== date);
+    appData.her.weights.push({ id:Date.now()+1, date, weight:parseFloat(herW), waist:herWaist?parseFloat(herWaist):null, notes });
+    appData.her.weights.sort((a,b) => a.date.localeCompare(b.date));
+  }
+  saveAppData();
+
+  document.getElementById('wt-him-input').value='';
+  document.getElementById('wt-her-input').value='';
+  document.getElementById('wt-him-waist').value='';
+  document.getElementById('wt-her-waist').value='';
+  document.getElementById('wt-notes').value='';
+  document.getElementById('wt-date').value=todayStr();
+
+  renderWeightPage();
+  showToast('✅ Weigh-in saved!');
+}
+
+function deleteWeight(user, id) {
+  appData[user].weights = appData[user].weights.filter(w => w.id !== id);
+  saveAppData();
+  renderWeightPage();
+  renderDashboard();
+  showToast('🗑️ Entry deleted');
+}
+
+function renderWeightPage() {
+  ['him','her'].forEach(u => {
+    const user = u==='him'?HIM:HER;
+    const weights = appData[u].weights;
+    const current = weights.length ? weights[weights.length-1].weight : user.start;
+    const lost = Math.max(0, user.start - current);
+    const pct = Math.min(100, (lost/(user.start-user.goal))*100);
+
+    document.getElementById(`wt-${u}-current`).textContent = current;
+    const changEl = document.getElementById(`wt-${u}-change`);
+    if (weights.length) {
+      const sign = lost>0?'▼ ':lost<0?'▲ ':'';
+      const color = lost>0?'var(--pf-green)':lost<0?'var(--pf-red)':'var(--muted)';
+      changEl.textContent = sign + Math.abs(lost).toFixed(1) + ' lbs ' + (lost>0?'lost':lost<0?'gained':'no change');
+      changEl.style.color = color;
+    } else {
+      changEl.textContent = 'No weigh-ins yet';
+      changEl.style.color = 'var(--muted)';
+    }
+    document.getElementById(`wt-${u}-bar`).style.width = pct+'%';
+  });
+
+  // History table
+  const container = document.getElementById('weightHistoryTable');
+  const allEntries = [];
+  appData.him.weights.forEach(w => allEntries.push({...w, user:'him'}));
+  appData.her.weights.forEach(w => allEntries.push({...w, user:'her'}));
+  allEntries.sort((a,b) => b.date.localeCompare(a.date));
+
+  if (!allEntries.length) {
+    container.innerHTML = '<div class="empty-state"><span class="big-emoji">⚖️</span>No weigh-ins yet — log your first one above!</div>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="weight-history-table">
+      <div class="wh-header">
+        <div class="wh-th">Date</div>
+        <div class="wh-th">Person</div>
+        <div class="wh-th">Weight</div>
+        <div class="wh-th">Action</div>
+      </div>
+      ${allEntries.map(w => {
+        const user = w.user==='him'?HIM:HER;
+        const userWeights = appData[w.user].weights;
+        const idx = userWeights.findIndex(x => x.id===w.id);
+        const prev = idx>0?userWeights[idx-1]:null;
+        const diff = prev ? (w.weight - prev.weight) : null;
+        const changeStr = diff!==null ? '<span style="color:' + (diff<0?'var(--pf-green)':'var(--pf-red)') + '">' + (diff<0?'▼':'▲') + ' ' + Math.abs(diff).toFixed(1) + '</span>' : '';
+        return `<div class="wh-row">
+          <div class="wh-td date">${fmtDate(w.date)}${w.waist?`<br><span style="font-size:10px">Waist: ${w.waist}"</span>`:''}</div>
+          <div class="wh-td"><span style="color:${user.color}">${user.emoji} ${user.name}</span></div>
+          <div class="wh-td weight" style="color:${user.color}">${w.weight} lbs ${changeStr}</div>
+          <div class="wh-td"><button class="del-btn" onclick="deleteWeight('${w.user}',${w.id})">✕</button></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ════════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════════
+function renderDashboard() {
+  ['him','her'].forEach(u => {
+    const user = u==='him'?HIM:HER;
+    const data = appData[u];
+    const current = data.weights.length ? data.weights[data.weights.length-1].weight : user.start;
+    const lost = Math.max(0, user.start - current);
+    const pct = Math.min(100, (lost/(user.start-user.goal))*100);
+
+    document.getElementById(`dash-${u}-weight`).textContent = current;
+    document.getElementById(`dash-${u}-workouts`).querySelector('.mini-stat-val').textContent = data.workouts.length;
+    document.getElementById(`dash-${u}-lost`).querySelector('.mini-stat-val').textContent = lost.toFixed(1);
+    document.getElementById(`dash-${u}-bar`).style.width = pct+'%';
+
+    const sub = document.getElementById(`dash-${u}-sub`);
+    if (data.weights.length) {
+      sub.textContent = `${lost.toFixed(1)} lbs lost · ${(user.start-user.goal-lost).toFixed(0)} to go`;
+      sub.style.color = lost>0?'var(--pf-green)':'var(--muted)';
+    } else {
+      sub.textContent = 'Starting weight — no weigh-ins yet';
+      sub.style.color = 'var(--muted)';
+    }
+  });
+
+  renderWeightChart();
+  renderWorkoutChart();
+  renderRecentActivity();
+}
+
+function renderWeightChart() {
+  const container = document.getElementById('weightChart');
+  const empty = document.getElementById('weightChartEmpty');
+  const himW = appData.him.weights;
+  const herW = appData.her.weights;
+  const hasData = himW.length > 0 || herW.length > 0;
+
+  container.style.display = hasData ? 'block' : 'none';
+  empty.style.display = hasData ? 'none' : 'block';
+  if (!hasData) return;
+
+  const allDates = [...new Set([...himW.map(w=>w.date),...herW.map(w=>w.date)])].sort();
+  const allVals = [...himW.map(w=>w.weight),...herW.map(w=>w.weight)];
+  if (!allVals.length) return;
+  const mn = Math.min(...allVals) - 2;
+  const mx = Math.max(...allVals) + 2;
+  const range = mx - mn || 1;
+  const H = 160, W_PCT = 100;
+  const PT = 10, PB = 24, PL = 8, PR = 4;
+  const ch = H - PT - PB;
+
+  // Build SVG
+  const toX = i => PL + (allDates.length < 2 ? 50 : i * (W_PCT - PL - PR) / (allDates.length - 1));
+  const toY = v => PT + ch - ((v - mn) / range) * ch;
+
+  // Grid lines HTML
+  let gridLines = '';
+  for (let i = 0; i <= 4; i++) {
+    const v = mn + (range / 4) * i;
+    const y = toY(v);
+    gridLines += `<line x1="${PL}%" y1="${y}" x2="${100-PR}%" y2="${y}" stroke="#2a2a2a" stroke-width="1"/>`;
+    gridLines += `<text x="${PL - 1}%" y="${y + 4}" text-anchor="end" font-size="9" fill="#666" font-family="DM Sans,sans-serif">${Math.round(v)}</text>`;
+  }
+
+  // X labels
+  let xLabels = '';
+  const step = Math.max(1, Math.ceil(allDates.length / 5));
+  allDates.forEach((d, i) => {
+    if (i % step === 0) {
+      const x = toX(i);
+      xLabels += `<text x="${x}%" y="${H - 4}" text-anchor="middle" font-size="9" fill="#666" font-family="DM Sans,sans-serif">${fmtShort(d)}</text>`;
+    }
+  });
+
+  // Lines and dots
+  let linesSVG = '';
+  [[himW,'#3b82f6'],[herW,'#d946ef']].forEach(([data, color]) => {
+    if (!data.length) return;
+    const pts = data.map(w => {
+      const i = allDates.indexOf(w.date);
+      return { x: toX(i), y: toY(w.weight) };
+    });
+    if (pts.length > 1) {
+      const d = pts.map((p,i) => (i===0?'M':'L') + p.x + '% ' + p.y).join(' ');
+      linesSVG += `<path d="${d}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
+    }
+    pts.forEach(p => {
+      linesSVG += `<circle cx="${p.x}%" cy="${p.y}" r="4" fill="${color}" stroke="#0d0d0d" stroke-width="2"/>`;
+    });
+  });
+
+  container.innerHTML = `<svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" style="width:100%;height:${H}px;display:block;overflow:visible">${gridLines}${xLabels}${linesSVG}</svg>`;
+}
+
+function renderWorkoutChart() {
+  const container = document.getElementById('workoutChart');
+  const empty = document.getElementById('workoutChartEmpty');
+  const himW = appData.him.workouts;
+  const herW = appData.her.workouts;
+  const hasData = himW.length > 0 || herW.length > 0;
+
+  container.style.display = hasData ? 'block' : 'none';
+  empty.style.display = hasData ? 'none' : 'block';
+  if (!hasData) return;
+
+  // Build weekly buckets
+  const weekMap = {};
+  [...himW.map(w=>({...w,u:'him'})),...herW.map(w=>({...w,u:'her'}))].forEach(w => {
+    const wk = getWeekStart(w.date);
+    if (!weekMap[wk]) weekMap[wk] = {him:0, her:0};
+    weekMap[wk][w.u]++;
+  });
+  const weeks = Object.keys(weekMap).sort().slice(-8);
+  if (!weeks.length) return;
+
+  const mx = Math.max(1, ...weeks.map(w => Math.max(weekMap[w].him, weekMap[w].her)));
+
+  // Build bar chart using flex divs
+  const barsHTML = weeks.map(wk => {
+    const himPct = Math.max(2, (weekMap[wk].him / mx) * 100);
+    const herPct = Math.max(2, (weekMap[wk].her / mx) * 100);
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+      <div style="display:flex;align-items:flex-end;gap:2px;height:120px;width:100%;justify-content:center">
+        <div style="width:44%;background:#3b82f6;border-radius:3px 3px 0 0;height:${himPct}%;min-height:2px;transition:height 0.5s"></div>
+        <div style="width:44%;background:#d946ef;border-radius:3px 3px 0 0;height:${herPct}%;min-height:2px;transition:height 0.5s"></div>
+      </div>
+      <div style="font-size:9px;color:#666;text-align:center;white-space:nowrap;overflow:hidden;max-width:100%;padding:0 1px">${fmtShort(wk)}</div>
+      <div style="font-size:9px;color:#666;text-align:center">${weekMap[wk].him}/${weekMap[wk].her}</div>
+    </div>`;
+  }).join('');
+
+  // Y axis labels
+  const yLabels = [0,1,2,3,mx].filter((v,i,a)=>a.indexOf(v)===i).map(v =>
+    `<div style="font-size:9px;color:#666;line-height:1">${v}</div>`
+  ).reverse().join('');
+
+  container.innerHTML = `
+    <div style="display:flex;gap:4px;align-items:flex-end">
+      <div style="display:flex;flex-direction:column;justify-content:space-between;height:120px;padding-bottom:0;margin-bottom:34px">${yLabels}</div>
+      <div style="display:flex;gap:4px;flex:1;align-items:flex-end">${barsHTML}</div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:#888">
+      <span><span style="display:inline-block;width:10px;height:10px;background:#3b82f6;border-radius:2px;margin-right:4px"></span>Him</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#d946ef;border-radius:2px;margin-right:4px"></span>Her</span>
+    </div>`;
+}
+
+function renderRecentActivity() {
+  const container = document.getElementById('recentActivity');
+  const all = [];
+  ['him','her'].forEach(u => {
+    appData[u].workouts.forEach(w => all.push({...w, type:'workout', user:u}));
+    appData[u].weights.forEach(w => all.push({...w, type:'weight', user:u}));
+  });
+  all.sort((a,b) => b.date.localeCompare(a.date) || b.id-a.id);
+  const recent = all.slice(0,8);
+
+  if (!recent.length) {
+    container.innerHTML = '<div class="empty-state"><span class="big-emoji">🚀</span>Nothing logged yet — hit Log Workout or Log Weight to get started!</div>';
+    return;
+  }
+
+  container.innerHTML = recent.map(item => {
+    const user = item.user==='him'?HIM:HER;
+    if (item.type==='workout') {
+      return `<div class="activity-item">
+        <div class="activity-icon">🏋️</div>
+        <div class="activity-text">
+          <div class="activity-main">${item.phase} · ${item.day} <span class="activity-badge ${item.user}">${user.emoji} ${user.name}</span></div>
+          <div class="activity-sub">${item.duration} min${item.completed.length?` · ${item.completed.length} exercises`:''}</div>
+        </div>
+        <div class="activity-date">${fmtDate(item.date)}</div>
+      </div>`;
+    } else {
+      const lost = Math.max(0, (item.user==='him'?HIM.start:HER.start) - item.weight);
+      return `<div class="activity-item">
+        <div class="activity-icon">⚖️</div>
+        <div class="activity-text">
+          <div class="activity-main">${item.weight} lbs <span class="activity-badge ${item.user}">${user.emoji} ${user.name}</span></div>
+          <div class="activity-sub">${lost>0?`${lost.toFixed(1)} lbs lost from start`:'Weigh-in logged'}</div>
+        </div>
+        <div class="activity-date">${fmtDate(item.date)}</div>
+      </div>`;
+    }
+  }).join('');
+}
+
+// ════════════════════════════════════════
+// BADGES
+// ════════════════════════════════════════
+function selectBadgeUser(u) {
+  activeBadgeUser = u;
+  document.getElementById('badge-him-btn').classList.toggle('active', u==='him');
+  document.getElementById('badge-her-btn').classList.toggle('active', u==='her');
+  renderBadges();
+}
+
+function renderBadges() {
+  const u = activeBadgeUser;
+  const user = u==='him'?HIM:HER;
+  const data = appData[u];
+  const container = document.getElementById('badgesGrid');
+  container.innerHTML = BADGES.map(b => {
+    const unlocked = b.check(data, user.start, user.goal);
+    return `<div class="badge-card ${unlocked?'unlocked':'locked'}">
+      <span class="badge-icon">${b.icon}</span>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+      <div class="badge-status ${unlocked?'unlocked':'locked'}">${unlocked?'✓ UNLOCKED':'Locked'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════
+function todayStr() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function fmtDate(d) {
+  return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+function fmtShort(d) {
+  return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function getWeekStart(dateStr) {
+  const d = new Date(dateStr+'T12:00:00');
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day===0?-6:1);
+  return new Date(d.setDate(diff)).toISOString().slice(0,10);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function refreshAll() {
+  renderDashboard();
+  renderWorkoutHistory();
+  renderWeightPage();
+  renderBadges();
+}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+window.addEventListener('load', () => {
+  try {
+    document.getElementById('wo-date').value = todayStr();
+    document.getElementById('wt-date').value = todayStr();
+    const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const todayDay = days[new Date().getDay()];
+    const daySelect = document.getElementById('wo-day');
+    for(let opt of daySelect.options) { if(opt.value===todayDay) { opt.selected=true; break; } }
+    updateExerciseList();
+    document.querySelectorAll('.bar-fill').forEach(fill => {
+      const w = fill.style.width; fill.style.width='0';
+      setTimeout(()=>fill.style.width=w, 400);
+    });
+    refreshAll();
+  } catch(e) {
+    document.body.innerHTML='<div style="padding:40px;color:#f5f5f5;font-family:sans-serif;background:#0d0d0d;min-height:100vh"><h2 style="color:#ef4444;margin-bottom:12px">App Error</h2><p style="color:#aaa">'+e.message+'</p><p style="color:#666;margin-top:8px">Try refreshing the page.</p></div>';
+  }
+});
+</script>
+</body>
+</html>
